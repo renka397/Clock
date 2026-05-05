@@ -151,62 +151,6 @@ color: #131A22;
 font-weight: 700;
 }
 
-.bottom-bar {
-position: absolute;
-bottom: 0;
-left: 0;
-right: 0;
-height: calc(48px + env(safe-area-inset-bottom));
-padding-bottom: env(safe-area-inset-bottom);
-padding-left: calc(32px + env(safe-area-inset-left));
-padding-right: calc(32px + env(safe-area-inset-right));
-background: #131A22;
-display: flex;
-align-items: center;
-justify-content: space-between;
-font-size: 11px;
-color: #FFFFFF;
-letter-spacing: 1.5px;
-text-transform: uppercase;
-font-weight: 500;
-}
-
-.status {
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-.status-dot {
-width: 6px;
-height: 6px;
-background: #FF9900;
-border-radius: 50%;
-}
-
-.progress-section {
-display: flex;
-align-items: center;
-gap: 12px;
-}
-
-.progress-bar {
-width: 200px;
-height: 2px;
-background: rgba(255, 255, 255, 0.2);
-position: relative;
-overflow: hidden;
-}
-
-.progress-fill {
-position: absolute;
-top: 0;
-left: 0;
-height: 100%;
-background: #FF9900;
-transition: width 1s linear;
-}
-
 .ambient {
 position: absolute;
 top: 50%;
@@ -222,14 +166,60 @@ z-index: 0;
 @media (max-width: 900px) {
 .time { font-size: 110px; letter-spacing: -3px; }
 .date-row { font-size: 14px; gap: 16px; }
-.progress-bar { width: 120px; }
 }
 
 @media (max-width: 500px) {
 .time { font-size: 72px; letter-spacing: -2px; }
 .top-bar { padding-left: calc(16px + env(safe-area-inset-left)); padding-right: calc(16px + env(safe-area-inset-right)); }
-.bottom-bar { padding-left: calc(16px + env(safe-area-inset-left)); padding-right: calc(16px + env(safe-area-inset-right)); }
 .top-bar-meta { display: none; }
+}
+
+/* === Landscape (横向き) optimization === */
+@media (orientation: landscape) and (max-height: 500px) {
+.top-bar {
+height: calc(28px + env(safe-area-inset-top));
+padding-left: calc(20px + env(safe-area-inset-left));
+padding-right: calc(20px + env(safe-area-inset-right));
+background: rgba(19, 26, 34, 0.92);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+}
+
+```
+.logo {
+  font-size: 14px;
+  padding-bottom: 2px;
+}
+
+.logo::after {
+  height: 5px;
+  border-bottom-width: 1.5px;
+}
+
+.top-bar-meta {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.time {
+  font-size: 140px;
+  letter-spacing: -3px;
+}
+
+.timezone-label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+
+.date-row {
+  font-size: 13px;
+  margin-top: 16px;
+  gap: 14px;
+}
+```
+
 }
 </style>
 
@@ -244,7 +234,7 @@ z-index: 0;
   </div>
 
   <div class="clock-wrapper">
-    <div class="timezone-label">Japan Standard Time</div>
+    <div class="timezone-label">愛梨ファイト！</div>
     <div class="time">
       <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
     </div>
@@ -254,20 +244,6 @@ z-index: 0;
       <span class="weekday" id="weekday">火曜日</span>
       <span class="divider"></span>
       <span id="week">Week 19</span>
-    </div>
-  </div>
-
-  <div class="bottom-bar">
-    <div class="status">
-      <span class="status-dot"></span>
-      <span>SYNCED</span>
-    </div>
-    <div class="progress-section">
-      <span id="progress-label">DAY PROGRESS</span>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress"></div>
-      </div>
-      <span id="progress-pct">0%</span>
     </div>
   </div>
 </div>
@@ -307,12 +283,6 @@ z-index: 0;
     document.getElementById('date').textContent = dateStr;
     document.getElementById('weekday').textContent = weekdays[d.getDay()];
     document.getElementById('week').textContent = `Week ${getWeekNumber(d)}`;
-
-    const totalSecondsInDay = 24 * 3600;
-    const elapsedSeconds = h * 3600 + m * 60 + s;
-    const pct = (elapsedSeconds / totalSecondsInDay) * 100;
-    document.getElementById('progress').style.width = pct + '%';
-    document.getElementById('progress-pct').textContent = pct.toFixed(1) + '%';
   }
 
   update();
